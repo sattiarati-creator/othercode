@@ -1,0 +1,48 @@
+2.git init
+git config --global user.name "neethacn"
+git config --global user.email "neethacn2004@gmail.com"
+git config --list
+
+mkdir demolab3
+cd demolab3
+git clone (paste url of git xyz)
+cd xyz
+nano project.txt
+git add project.txt
+git commit -m "initial commit"
+git push origin master
+git branch feature-branch
+git checkout feature-branch
+
+nano project1.txt
+git add .
+git commit -m "feature-branch update"
+git push origin feature-branch
+
+merge
+
+cd ~
+mkdir merge_demo
+cd merge_demo
+git init
+
+echo "version1" > file.txt
+git add .
+git commit -m "initial commit"
+git checkout -b feature
+
+echo "feature version" > file1.txt
+git add .
+git commit -m "change in feature"
+git checkout master
+
+echo "main version" > file1.txt
+git add .
+git commit -m "change in main"
+git merge feature
+
+cat file1.txt
+echo "allow main and feature branch" >file1.txt
+git add .
+git commit -m "resolve merge conflict"
+git diff master feature
