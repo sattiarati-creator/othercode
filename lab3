@@ -1,0 +1,11 @@
+sudo apt update
+sudo apt install openjdk-21-jdk -y
+sudo rm jenkins.war
+suo rm -rf ~/.jenkins
+wget https://get.jenkins.io/war-stable/latest/jenkins.war
+java -jar jenkins.war --httpPort=8086
+
+
+sudo apt uddate
+sudo apt install snapd -y
+sudo snap install ngrok
