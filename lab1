@@ -1,0 +1,28 @@
+1.git --version
+cd desktop/anu
+git init
+git add .
+git remote add origin <repo link>
+
+git config -- global user.name "neethacn"
+git config -- global user.email "neethacn2004@gmail.com"
+git commit -m "initial commit"
+git push origin master <accept---authentication>
+git remote rm origin
+git status
+git log
+
+cat anu.txt
+git add .
+git commit -m "before reset"
+
+vi anu.txt
+
+cat anu.txt
+git add .
+git commit -m "after reset"
+
+git log
+
+git reset --hard <link>
+git clone <link>
