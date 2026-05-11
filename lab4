@@ -1,0 +1,8 @@
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+sudo apt install docker.io -y
+sudo systemctl start docker
+sudo systemctl enable docker
+docker --version
+sudo docker run hello-world
+
