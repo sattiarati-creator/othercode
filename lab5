@@ -1,0 +1,180 @@
+reset the password...............login to dockerhub ->settings->password->reset password
+Create a repository with these files:
+
+1.Dockerfile
+
+2.Jenkinsfile
+
+3.app.py
+
+4.requirements.txt
+
+
+git clone https://github.com/username/repository.git
+
+
+ls
+cd jenkins-docker
+ls
+
+
+docker build -t my-python-app .
+
+docker images
+
+
+docker tag my-python-app:latest <dockerhub_username>/my-python-app:latest
+
+Example:
+
+docker tag my-python-app:latest ananya622/my-python-app:latest
+
+docker images
+
+docker login -u <dockerhub_username>
+
+Enter:
+
+DockerHub password
+OR
+Personal Access Token
+
+
+docker push ananya622/my-python-app:latest
+
+
+cd ..
+
+Update packages:
+
+sudo apt update
+sudo apt install openjdk-21-jdk -y
+sudo rm jenkins.war
+sudo rm -rf ~/.jenkins
+wget https://get.jenkins.io/war-stable/latest/jenkins.war
+java -jar jenkins.war
+java -jar jenkins.war --httpPort=8086
+
+
+
+http://localhost:8086
+
+
+Manage Jenkins
+→ Plugins
+→ Available Plugins
+→ Search "Docker Pipeline"
+→ Install
+
+
+---
+
+Step 15: Add DockerHub Credentials
+
+Go to:
+
+Manage Jenkins
+→ Credentials
+→ Global
+→ Add Credentials
+
+Select:
+
+Username with password
+
+
+Enter:
+
+Username → DockerHub username
+
+Password → DockerHub password/token
+
+ID → dockerhub-credentials->from jenkinsfile file
+
+
+Click Save.
+
+
+---
+
+Step 16: Create Jenkins Pipeline
+
+Go to:
+
+New Item
+→ Enter Project Name
+→ Pipeline
+→ OK
+
+
+---
+
+Step 17: Configure GitHub Repository
+
+In Pipeline settings:
+
+Pipeline
+→ Definition → Pipeline script from SCM
+→ SCM → Git
+→ Repository URL → Paste GitHub repo URL
+→ Branch → main
+→ Save
+
+
+---
+
+Step 18: Build Pipeline
+
+Click:
+
+Build Now
+
+
+Jenkinsfile  
+
+
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "naveen04jan/my-python-app"
+        DOCKER_TAG = "latest"
+    }
+
+    stages {
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE:$DOCKER_TAG .'
+            }
+        }
+
+        stage('Login to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                }
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh 'docker push $DOCKER_IMAGE:$DOCKER_TAG'
+            }
+        }
+
+        stage('Deploy Container') {
+            steps {
+                sh '''
+                docker stop myapp-container || true
+                docker rm myapp-container || true
+                docker run -d -p 5000:5000 --name myapp-container $DOCKER_IMAGE:$DOCKER_TAG
+                '''
+            }
+        }
+    }
+}
